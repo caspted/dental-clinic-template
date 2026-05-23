@@ -452,6 +452,7 @@ export default function BookingQuiz() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     required
+                    autoComplete="given-name"
                     placeholder="Sarah"
                     className={`h-[48px] px-4 border rounded-md text-base text-text-primary bg-white focus:outline-none focus:border-accent focus:ring-3 focus:ring-accent-glow transition-all ${
                       touched.first_name && errors.first_name ? "border-[#EF4444] bg-[#FEF2F2]" : "border-black/8"
@@ -474,6 +475,7 @@ export default function BookingQuiz() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     required
+                    autoComplete="family-name"
                     placeholder="Miller"
                     className={`h-[48px] px-4 border rounded-md text-base text-text-primary bg-white focus:outline-none focus:border-accent focus:ring-3 focus:ring-accent-glow transition-all ${
                       touched.last_name && errors.last_name ? "border-[#EF4444] bg-[#FEF2F2]" : "border-black/8"
@@ -497,6 +499,8 @@ export default function BookingQuiz() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   required
+                  inputMode="email"
+                  autoComplete="email"
                   placeholder="sarah@example.com"
                   className={`h-[48px] px-4 border rounded-md text-base text-text-primary bg-white focus:outline-none focus:border-accent focus:ring-3 focus:ring-accent-glow transition-all ${
                     touched.email && errors.email ? "border-[#EF4444] bg-[#FEF2F2]" : "border-black/8"
@@ -519,6 +523,8 @@ export default function BookingQuiz() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   required
+                  inputMode="tel"
+                  autoComplete="tel"
                   placeholder="(415) 555-0144"
                   className={`h-[48px] px-4 border rounded-md text-base text-text-primary bg-white focus:outline-none focus:border-accent focus:ring-3 focus:ring-accent-glow transition-all ${
                     touched.phone && errors.phone ? "border-[#EF4444] bg-[#FEF2F2]" : "border-black/8"

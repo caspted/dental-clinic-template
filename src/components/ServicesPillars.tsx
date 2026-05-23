@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { ghlCustomValues } from "../config/ghlConfig";
 import { ShieldIcon, SparklesIcon, ImplantIcon } from "./Icons";
