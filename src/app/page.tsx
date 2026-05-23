@@ -7,6 +7,7 @@ import Reviews from "../components/Reviews";
 import BookingQuiz from "../components/BookingQuiz";
 import AccordionFAQ from "../components/AccordionFAQ";
 import Footer from "../components/Footer";
+import ChatAssistant from "../components/ChatAssistant";
 
 export default function Home() {
   return (
@@ -36,6 +37,9 @@ export default function Home() {
 
       {/* Footer Contact Details & Legal Maps */}
       <Footer />
+
+      {/* Floating AI reception desk assistant */}
+      <ChatAssistant />
     </div>
   );
 }

@@ -46,7 +46,7 @@ export default function Navbar() {
         <div className="flex items-center">
           <a
             href={telLink}
-            className="inline-flex items-center justify-center h-[48px] px-6 text-[15px] font-semibold border border-black/8 rounded-md hover:border-black/15 hover:bg-bg-secondary text-text-primary transition-all duration-200 shadow-sm"
+            className="inline-flex items-center justify-center h-[48px] px-3 sm:px-6 text-[13px] sm:text-[15px] font-semibold border border-black/8 rounded-md hover:border-black/15 hover:bg-bg-secondary text-text-primary whitespace-nowrap transition-all duration-200 shadow-sm"
           >
             Call: {ghlCustomValues.practice_phone}
           </a>

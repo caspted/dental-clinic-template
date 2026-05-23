@@ -290,7 +290,7 @@ export default function BookingQuiz() {
     <section id="booking" className="py-12 md:py-24 bg-bg-secondary border-t border-b border-black/8">
       <div className="w-full max-w-[1200px] mx-auto px-4 grid grid-cols-1 md:grid-cols-[0.95fr_1.05fr] gap-12 md:gap-24 items-center">
         {/* Left Side Guarantees */}
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-center md:items-start text-center md:text-left">
           <span className="text-[13px] font-bold tracking-[1.5px] uppercase text-accent mb-2">
             Simple & Comfortable Intake
           </span>
@@ -300,7 +300,7 @@ export default function BookingQuiz() {
           <p className="text-lg text-text-secondary mb-8 leading-relaxed">
             Take our quick 1-minute smile quiz to check your PPO insurance coverage, qualify your candidacy, and schedule your appointment immediately.
           </p>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 items-start">
             <div className="text-[15px] font-semibold text-text-primary flex items-center gap-2.5">
               <CheckIcon className="text-accent w-4.5 h-4.5" strokeWidth={2.5} /> Real-time PPO Insurance Match
             </div>
