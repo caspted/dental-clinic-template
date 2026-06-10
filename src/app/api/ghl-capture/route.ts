@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { first_name, last_name, email, phone, dental_goal, insurance } = body;
+    const { first_name, last_name, email, phone, dental_goal, insurance, message } = body;
 
     // Validate backend structural environment presence
     const ghlToken = process.env.GHL_PRIVATE_INTEGRATION_TOKEN;
@@ -26,7 +26,8 @@ export async function POST(request: Request) {
       tags: ["Dental Intake Quiz Lead", `Goal: ${dental_goal}`, `Insurance: ${insurance}`],
       customFields: [
         { key: "dental_goal", value: dental_goal },
-        { key: "insurance_type", value: insurance }
+        { key: "insurance_type", value: insurance },
+        { key: "custom_message", value: message || "" }
       ]
     };
 

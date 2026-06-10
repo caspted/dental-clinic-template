@@ -20,6 +20,7 @@ interface FormData {
   last_name: string;
   email: string;
   phone: string;
+  message?: string;
 }
 
 interface FormErrors {
@@ -38,6 +39,7 @@ export default function BookingQuiz() {
     last_name: "",
     email: "",
     phone: "",
+    message: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -56,6 +58,21 @@ export default function BookingQuiz() {
   const [pdfDownloading, setPdfDownloading] = useState<boolean>(false);
   const [pdfDownloaded, setPdfDownloaded] = useState<boolean>(false);
   const [showNurture, setShowNurture] = useState<boolean>(false);
+
+  const getGoalDetails = (goal: string) => {
+    switch (goal) {
+      case "invisalign":
+        return { title: "Invisalign or Orthodontic Braces", price: "Starts at Php 80,000", duration: "1 hr" };
+      case "whitening":
+        return { title: "Smile Esthetics (Veneers or Teeth Whitening)", price: "Starts at Php 15,000", duration: "1 hr 30 min" };
+      case "implants":
+        return { title: "Restorative Work (Implants, Root Canals, Surgery)", price: "Starts at Php 1,000", duration: "1 hr" };
+      case "cleaning":
+      default:
+        return { title: "Routine Care (Cleaning & Consultation)", price: "Starts at Php 800", duration: "1 hr" };
+    }
+  };
+  const goalInfo = getGoalDetails(formData.dental_goal);
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -89,7 +106,7 @@ export default function BookingQuiz() {
     setErrors((prev) => ({ ...prev, [name]: errorMsg }));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (touched[name]) {
@@ -166,19 +183,44 @@ export default function BookingQuiz() {
     // Route checks
     if (score >= 30 && !disqualified) {
       try {
-        const response = await fetch("/api/ghl-capture", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
+        if (ghlCustomValues.webhook_url) {
+          // Direct client-side POST to GHL Webhook as per coworker guide
+          await fetch(ghlCustomValues.webhook_url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              practiceName: ghlCustomValues.practice_name,
+              name: `${formData.first_name} ${formData.last_name}`,
+              firstName: formData.first_name,
+              lastName: formData.last_name,
+              email: formData.email,
+              phone: formData.phone,
+              message: formData.message || "",
+              dentalGoal: goalInfo.title,
+              estimatedPrice: goalInfo.price,
+              insurance: formData.insurance,
+              source: "Website Assessment Quiz",
+            }),
+            mode: "no-cors",
+          });
+        } else {
+          // Fallback to proxy
+          const response = await fetch("/api/ghl-capture", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
 
-        if (!response.ok) {
-          throw new Error("Failed to process intake data");
+          if (!response.ok) {
+            throw new Error("Failed to process intake data");
+          }
         }
 
-        // Successfully captured by secure GHL API handler, proceed to scheduler
+        // Successfully captured, proceed to scheduler
         setStep(4);
       } catch (err: any) {
         console.error(err);
@@ -287,7 +329,7 @@ export default function BookingQuiz() {
   };
 
   return (
-    <section id="booking" className="py-12 md:py-24 bg-bg-secondary border-t border-b border-black/8">
+    <section id="booking" className="py-12 md:py-24 bg-white">
       <div className="w-full max-w-[1200px] mx-auto px-4 grid grid-cols-1 md:grid-cols-[0.95fr_1.05fr] gap-12 md:gap-24 items-center">
         {/* Left Side Guarantees */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left">
@@ -315,15 +357,26 @@ export default function BookingQuiz() {
 
         {/* Right Side Intake Quiz Card */}
         <div className="relative bg-white border border-black/8 rounded-xl p-6 md:p-10 shadow-lg overflow-hidden transition-all duration-300 min-h-[420px]">
-          {/* Progress Bar (Visible for quiz steps) */}
-          {step <= 3 && (
-            <div className="absolute top-0 left-0 w-full h-[6px] bg-bg-secondary">
-              <div
-                className="h-full bg-accent transition-all duration-400 ease-out"
-                style={{ width: `${(step / 3) * 100}%` }}
+          {ghlCustomValues.form_embed_url ? (
+            <div className="w-full min-h-[400px]">
+              <iframe
+                src={ghlCustomValues.form_embed_url}
+                style={{ width: "100%", border: "none", minHeight: "450px" }}
+                id="ghl-form-iframe"
+                title="Dental Assessment Form"
               />
             </div>
-          )}
+          ) : (
+            <>
+              {/* Progress Bar (Visible for quiz steps) */}
+              {step <= 3 && (
+                <div className="absolute top-0 left-0 w-full h-[6px] bg-bg-secondary">
+                  <div
+                    className="h-full bg-accent transition-all duration-400 ease-out"
+                    style={{ width: `${(step / 3) * 100}%` }}
+                  />
+                </div>
+              )}
 
           {/* STEP 1: Smile Goals */}
           {step === 1 && (
@@ -333,10 +386,10 @@ export default function BookingQuiz() {
               </h3>
               <div className="grid grid-cols-1 gap-3 mb-8">
                 {[
-                  { key: "invisalign", label: "Straighter Teeth (Invisalign)", Icon: ToothIcon, color: "text-[#0EA5E9]" },
-                  { key: "whitening", label: "Brighter/Whiter Smile", Icon: SparklesIcon, color: "text-[#059669]" },
-                  { key: "implants", label: "Replace Missing Teeth (Implants)", Icon: ImplantIcon, color: "text-[#4F46E5]" },
-                  { key: "cleaning", label: "Routine Cleaning/Checkup", Icon: ShieldIcon, color: "text-[#0284C7]" },
+                  { key: "invisalign", label: "Straighter Teeth (Invisalign or Braces)", Icon: ToothIcon, color: "text-accent" },
+                  { key: "whitening", label: "Smile Esthetics (Veneers or Laser Whitening)", Icon: SparklesIcon, color: "text-category-emerald-txt" },
+                  { key: "implants", label: "Restorative Work (Implants, Root Canals, Surgery)", Icon: ImplantIcon, color: "text-category-indigo-txt" },
+                  { key: "cleaning", label: "Routine Care (Cleaning & Consultation)", Icon: ShieldIcon, color: "text-category-blue-txt" },
                 ].map((opt) => (
                   <label key={opt.key} className="block cursor-pointer">
                     <input
@@ -349,7 +402,7 @@ export default function BookingQuiz() {
                     <span
                       className={`flex items-center gap-4 px-5 py-4 border rounded-lg min-h-[52px] transition-all duration-200 ${
                         formData.dental_goal === opt.key
-                          ? "border-accent bg-accent/20 shadow-[0_0_0_1px_#0EA5E9]"
+                          ? "border-accent bg-accent/20 shadow-[0_0_0_1px_var(--color-accent)]"
                           : "border-black/8 bg-white hover:border-black/15 hover:bg-bg-secondary"
                       }`}
                     >
@@ -382,8 +435,8 @@ export default function BookingQuiz() {
               </h3>
               <div className="grid grid-cols-1 gap-3 mb-8">
                 {[
-                  { key: "yes", label: "Yes, PPO Dental Insurance", Icon: ShieldIcon, color: "text-[#0284C7]" },
-                  { key: "self-fund", label: "No, I will self-fund or finance", Icon: CardIcon, color: "text-[#0EA5E9]" },
+                  { key: "yes", label: "Yes, PPO Dental Insurance", Icon: ShieldIcon, color: "text-category-blue-txt" },
+                  { key: "self-fund", label: "No, I will self-fund or finance", Icon: CardIcon, color: "text-accent" },
                   { key: "no-fund", label: "No insurance / Cannot self-fund", Icon: CloseIcon, color: "text-[#EF4444]" },
                 ].map((opt) => (
                   <label key={opt.key} className="block cursor-pointer">
@@ -397,7 +450,7 @@ export default function BookingQuiz() {
                     <span
                       className={`flex items-center gap-4 px-5 py-4 border rounded-lg min-h-[52px] transition-all duration-200 ${
                         formData.insurance === opt.key
-                          ? "border-accent bg-accent/20 shadow-[0_0_0_1px_#0EA5E9]"
+                          ? "border-accent bg-accent/20 shadow-[0_0_0_1px_var(--color-accent)]"
                           : "border-black/8 bg-white hover:border-black/15 hover:bg-bg-secondary"
                       }`}
                     >
@@ -438,6 +491,18 @@ export default function BookingQuiz() {
               <p className="text-[15.2px] text-text-secondary mb-6">
                 Enter your details below to check availability and calculate your intake match score.
               </p>
+
+              {/* Dynamic Selected Goal & Price Summary */}
+              <div className="bg-[#F8FAFC] border border-black/5 rounded-lg p-4 mb-5 text-left flex flex-col sm:flex-row justify-between gap-3">
+                <div>
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Selected Treatment</span>
+                  <span className="text-[14.5px] font-bold text-text-primary">{goalInfo.title}</span>
+                </div>
+                <div className="sm:text-right">
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider block mb-0.5">Estimated Price</span>
+                  <span className="text-[14.5px] font-bold text-accent">{goalInfo.price}</span>
+                </div>
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <div className="flex flex-col">
@@ -511,7 +576,7 @@ export default function BookingQuiz() {
                 )}
               </div>
 
-              <div className="flex flex-col mb-6">
+              <div className="flex flex-col mb-4">
                 <label htmlFor="phone" className="text-[13.6px] font-semibold text-text-secondary mb-1.5">
                   Phone Number *
                 </label>
@@ -535,6 +600,21 @@ export default function BookingQuiz() {
                 )}
               </div>
 
+              <div className="flex flex-col mb-6">
+                <label htmlFor="message" className="text-[13.6px] font-semibold text-text-secondary mb-1.5">
+                  Add Your Message / Custom Concern (Optional)
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={3}
+                  value={formData.message}
+                  onChange={handleChange}
+                  placeholder="Let us know if you have any dental anxiety, specific goals, or questions."
+                  className="p-3 border border-black/8 rounded-md text-base text-text-primary bg-white focus:outline-none focus:border-accent focus:ring-3 focus:ring-accent-glow transition-all resize-none min-h-[80px]"
+                />
+              </div>
+
               <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-6 border-t border-black/8">
                 <button
                   type="button"
@@ -554,6 +634,8 @@ export default function BookingQuiz() {
               </div>
             </form>
           )}
+            </>
+          )}
 
           {/* STEP 4: Qualified (Calendar scheduler) */}
           {step === 4 && (
@@ -572,80 +654,127 @@ export default function BookingQuiz() {
                     </p>
                   </div>
 
-                  {/* Calendar Widget */}
-                  <div className="border border-black/8 rounded-lg p-4 mb-6 bg-bg-secondary">
-                    {/* Header */}
-                    <div className="flex items-center justify-between mb-4 px-1">
-                      <button
-                        type="button"
-                        onClick={handlePrevMonth}
-                        className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/8 text-lg font-bold transition-all"
-                      >
-                        &lt;
-                      </button>
-                      <span className="font-heading font-bold text-[16px] text-text-primary">
-                        {monthYearLabel}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={handleNextMonth}
-                        className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/8 text-lg font-bold transition-all"
-                      >
-                        &gt;
-                      </button>
+                  {/* Dynamic Selected Service Card */}
+                  <div className="bg-[#F8FAFC] border border-black/5 rounded-lg p-5 mb-6 text-left flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <span className="text-[11px] font-bold text-accent uppercase tracking-wider block mb-1">Selected Treatment</span>
+                      <h4 className="text-[15.2px] font-bold text-text-primary">{goalInfo.title}</h4>
+                      <p className="text-[13px] text-text-secondary mt-0.5">{goalInfo.duration} session</p>
                     </div>
-
-                    {/* Week Grid Header */}
-                    <div className="grid grid-cols-7 text-center font-bold text-[12.8px] text-text-muted mb-2.5">
-                      <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+                    <div className="text-left sm:text-right shrink-0">
+                      <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider block mb-1">Estimated Cost</span>
+                      <span className="text-[15px] font-bold text-accent">{goalInfo.price}</span>
                     </div>
-
-                    {/* Days cells */}
-                    <div className="grid grid-cols-7 gap-1.5">
-                      {daysCells}
-                    </div>
-
-                    {/* Slots Area */}
-                    {selectedDate && (
-                      <div className="mt-6 pt-5 border-t border-black/8 animate-slide-down">
-                        <h4 className="text-[15.2px] font-bold text-text-primary mb-3">
-                          Available Slots for{" "}
-                          <span className="text-accent">
-                            {selectedDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })}
-                          </span>
-                          :
-                        </h4>
-                        <div className="grid grid-cols-3 gap-2">
-                          {mockSlots.map((slot) => (
-                            <button
-                              key={slot}
-                              type="button"
-                              onClick={() => handleSlotSelect(slot)}
-                              className="h-[44px] text-[13.6px] font-semibold border border-black/8 bg-white hover:border-accent hover:bg-accent-glow rounded-md transition-all cursor-pointer text-text-primary shadow-sm"
-                            >
-                              {slot}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
+
+                  {/* Calendar Widget */}
+                  {ghlCustomValues.calendar_embed_url ? (
+                    <div className="w-full min-h-[500px] border border-black/8 rounded-lg overflow-hidden bg-white shadow-sm mb-6">
+                      <iframe
+                        src={ghlCustomValues.calendar_embed_url}
+                        style={{ width: "100%", border: "none", minHeight: "500px" }}
+                        scrolling="no"
+                        id="ghl-calendar-iframe"
+                        title="GHL Calendar Scheduler"
+                      />
+                    </div>
+                  ) : (
+                    <div className="border border-black/8 rounded-lg p-4 mb-6 bg-bg-secondary">
+                      {/* Header */}
+                      <div className="flex items-center justify-between mb-4 px-1">
+                        <button
+                          type="button"
+                          onClick={handlePrevMonth}
+                          className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/8 text-lg font-bold transition-all"
+                        >
+                          &lt;
+                        </button>
+                        <span className="font-heading font-bold text-[16px] text-text-primary">
+                          {monthYearLabel}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleNextMonth}
+                          className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/8 text-lg font-bold transition-all"
+                        >
+                          &gt;
+                        </button>
+                      </div>
+
+                      {/* Week Grid Header */}
+                      <div className="grid grid-cols-7 text-center font-bold text-[12.8px] text-text-muted mb-2.5">
+                        <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+                      </div>
+
+                      {/* Days cells */}
+                      <div className="grid grid-cols-7 gap-1.5">
+                        {daysCells}
+                      </div>
+
+                      {/* Slots Area */}
+                      {selectedDate && (
+                        <div className="mt-6 pt-5 border-t border-black/8 animate-slide-down">
+                          <h4 className="text-[15.2px] font-bold text-text-primary mb-3">
+                            Available Slots for{" "}
+                            <span className="text-accent">
+                              {selectedDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })}
+                            </span>
+                            :
+                          </h4>
+                          <div className="grid grid-cols-3 gap-2">
+                            {mockSlots.map((slot) => (
+                              <button
+                                key={slot}
+                                type="button"
+                                onClick={() => handleSlotSelect(slot)}
+                                className="h-[44px] text-[13.6px] font-semibold border border-black/8 bg-white hover:border-accent hover:bg-accent-glow rounded-md transition-all cursor-pointer text-text-primary shadow-sm"
+                              >
+                                {slot}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </>
               ) : (
-                <div className="text-center py-8 animate-scale-up">
+                <div className="text-center py-6 animate-scale-up">
                   <div className="w-16 h-16 bg-[#DCFCE7] text-[#15803D] rounded-full flex items-center justify-center mx-auto mb-5 shadow-sm border border-[#BBF7D0]">
                     <CheckIcon className="w-8 h-8" strokeWidth={2.5} />
                   </div>
                   <h4 className="font-heading text-[1.35rem] font-bold text-text-primary mb-2.5">
                     Appointment Reserved!
                   </h4>
-                  <p className="text-[15.2px] text-text-secondary max-w-[400px] mx-auto leading-relaxed">
-                    Your appointment is scheduled for{" "}
+                  <p className="text-[15.2px] text-text-secondary max-w-[420px] mx-auto leading-relaxed mb-6">
+                    Your <strong className="text-text-primary">{goalInfo.title}</strong> has been successfully scheduled for{" "}
                     <strong className="text-text-primary">
                       {selectedDate?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}{" "}
                       at {selectedSlot}
                     </strong>
-                    . A text confirmation and calendar invite have been sent to your details.
+                    .
+                  </p>
+
+                  {/* Appointment Summary Box */}
+                  <div className="bg-[#F8FAFC] border border-black/5 rounded-lg p-5 text-left text-[14px] max-w-[440px] mx-auto mb-6 flex flex-col gap-2.5 shadow-sm">
+                    <div className="flex justify-between border-b border-black/5 pb-2">
+                      <span className="text-text-secondary font-medium">Practice:</span>
+                      <span className="text-text-primary font-bold text-right">{ghlCustomValues.practice_name}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-black/5 pb-2">
+                      <span className="text-text-secondary font-medium">Address:</span>
+                      <span className="text-text-primary font-semibold text-right max-w-[280px] leading-tight">
+                        3rd Floor Bocobo Commercial Center, Ermita
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-text-secondary font-medium">Contact Phone:</span>
+                      <span className="text-text-primary font-bold">{ghlCustomValues.practice_phone}</span>
+                    </div>
+                  </div>
+
+                  <p className="text-[13.6px] text-text-muted max-w-[400px] mx-auto">
+                    A text confirmation and calendar invite have been sent. If you need to make changes, please call our office directly.
                   </p>
                 </div>
               )}
@@ -670,7 +799,7 @@ export default function BookingQuiz() {
               {/* PDF Card */}
               {!showNurture ? (
                 <div className="border border-black/8 bg-bg-secondary rounded-lg p-6 flex flex-col gap-4">
-                  <div className="text-[#0EA5E9] flex items-center justify-center w-12 h-12 bg-white rounded-lg border border-black/8 shadow-sm mb-1">
+                  <div className="text-accent flex items-center justify-center w-12 h-12 bg-white rounded-lg border border-black/8 shadow-sm mb-1">
                     <DocumentIcon className="w-6 h-6" strokeWidth={1.75} />
                   </div>
                   <div>
