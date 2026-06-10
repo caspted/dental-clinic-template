@@ -5,50 +5,68 @@ export default function Navbar() {
   const telLink = `tel:${ghlCustomValues.practice_phone.replace(/\D/g, "")}`;
 
   return (
-    <header className="sticky top-0 z-50 h-[72px] flex items-center bg-white/85 backdrop-blur-md border-b border-black/8 px-4 md:px-0">
+    <header className="sticky top-0 z-50 h-[72px] flex items-center bg-white/95 backdrop-blur-md border-b border-black/5 px-4 md:px-0 shadow-sm">
       <div className="w-full max-w-[1200px] mx-auto px-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl text-accent font-extrabold">✦</span>
-          <span className="font-heading text-xl font-bold tracking-tight text-text-primary">
-            {ghlCustomValues.practice_name}
-          </span>
+        <div className="flex items-center gap-2.5">
+          {/* Custom Stylized Tooth-Heart Logo */}
+          <div className="flex items-center justify-center w-9 h-9">
+            <svg viewBox="0 0 200 200" className="w-full h-full">
+              {/* Tooth outer path (heart-like shape) */}
+              <path 
+                d="M 100,55 C 75,10 20,35 25,90 C 29,130 50,150 100,185 C 150,150 171,130 175,90 C 180,35 125,10 100,55 Z" 
+                fill="none" 
+                stroke="#6BA60B" 
+                strokeWidth="12" 
+                strokeLinejoin="round"
+              />
+              {/* Inner details / healing cross */}
+              <path 
+                d="M 100,75 L 100,125 M 75,100 L 125,100" 
+                stroke="#00B2BB" 
+                strokeWidth="10" 
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-heading text-base font-extrabold tracking-tight text-brand-tertiary uppercase leading-none">
+              Bocobo
+            </span>
+            <span className="text-[10px] font-bold tracking-widest text-[#6BA60B] uppercase leading-none mt-1">
+              Dental Care
+            </span>
+          </div>
         </div>
         
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-8">
           <a
             href="#services"
-            className="text-[15px] font-medium text-text-secondary hover:text-accent h-[44px] flex items-center transition-colors duration-200"
+            className="text-[14px] font-bold text-brand-neutral hover:text-accent h-[44px] flex items-center transition-colors duration-200"
           >
             Services
           </a>
           <a
-            href="#testimonials"
-            className="text-[15px] font-medium text-text-secondary hover:text-accent h-[44px] flex items-center transition-colors duration-200"
+            href="#about"
+            className="text-[14px] font-bold text-brand-neutral hover:text-accent h-[44px] flex items-center transition-colors duration-200"
           >
-            Reviews
+            About Us
           </a>
           <a
-            href="#booking"
-            className="text-[15px] font-medium text-text-secondary hover:text-accent h-[44px] flex items-center transition-colors duration-200"
+            href="#contact-location"
+            className="text-[14px] font-bold text-brand-neutral hover:text-accent h-[44px] flex items-center transition-colors duration-200"
           >
-            Book Assessment
-          </a>
-          <a
-            href="#faq"
-            className="text-[15px] font-medium text-text-secondary hover:text-accent h-[44px] flex items-center transition-colors duration-200"
-          >
-            FAQs
+            Contact
           </a>
         </nav>
 
         {/* CTA Button */}
         <div className="flex items-center">
           <a
-            href={telLink}
-            className="inline-flex items-center justify-center h-[48px] px-3 sm:px-6 text-[13px] sm:text-[15px] font-semibold border border-black/8 rounded-md hover:border-black/15 hover:bg-bg-secondary text-text-primary whitespace-nowrap transition-all duration-200 shadow-sm"
+            href="#booking"
+            className="inline-flex items-center justify-center h-[44px] px-6 text-[13px] font-bold bg-brand-tertiary hover:bg-brand-tertiary/90 text-white uppercase rounded-sm transition-all duration-200 shadow-sm"
           >
-            Call: {ghlCustomValues.practice_phone}
+            Book Appointment
           </a>
         </div>
       </div>

@@ -1,9 +1,10 @@
 import React from "react";
+import Image from "next/image";
 import { ghlCustomValues } from "../config/ghlConfig";
 
 export default function Reviews() {
   return (
-    <section id="testimonials" className="py-12 md:py-24 bg-white">
+    <section id="testimonials" className="py-12 md:py-24 bg-bg-secondary border-t border-b border-black/5">
       <div className="w-full max-w-[1200px] mx-auto px-4">
         {/* Section Header */}
         <div className="text-center max-w-[650px] mx-auto mb-12">
@@ -29,7 +30,7 @@ export default function Reviews() {
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <img
+              <Image
                 src="/assets/avatar_female.webp"
                 alt="Patient Sarah M."
                 className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
@@ -56,7 +57,7 @@ export default function Reviews() {
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <img
+              <Image
                 src="/assets/avatar_male.webp"
                 alt="Patient David K."
                 className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"

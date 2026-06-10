@@ -6,11 +6,11 @@
   --bg-secondary: #F8FAFC;
   --bg-card: #FFFFFF;
   --text-primary: #0F172A;
-  --text-secondary: #475569;
+  --text-secondary: #58595B;
   --text-muted: #94A3B8;
-  --accent: #0284C7;
-  --accent-hover: #0369A1;
-  --accent-glow: rgba(2, 132, 199, 0.2);
+  --accent: #00B2BB;
+  --accent-hover: #009CA4;
+  --accent-glow: rgba(0, 178, 187, 0.2);
   --border: rgba(0, 0, 0, 0.08);
   --border-hover: rgba(0, 0, 0, 0.15);
   
@@ -21,14 +21,14 @@
   --radius-xl: 16px;
   
   /* Semantic Badges 8% Opacity Accents */
-  --category-blue-bg: rgba(14, 165, 233, 0.08);
-  --category-blue-txt: #0284C7;
+  --category-blue-bg: rgba(0, 178, 187, 0.08);
+  --category-blue-txt: #00B2BB;
   
-  --category-emerald-bg: rgba(16, 185, 129, 0.08);
-  --category-emerald-txt: #059669;
+  --category-emerald-bg: rgba(107, 166, 11, 0.08);
+  --category-emerald-txt: #6BA60B;
   
-  --category-indigo-bg: rgba(99, 102, 241, 0.08);
-  --category-indigo-txt: #4F46E5;
+  --category-indigo-bg: rgba(0, 104, 148, 0.08);
+  --category-indigo-txt: #006894;
   
   /* Spacing Scale */
   --space-tight: 8px;
@@ -57,6 +57,19 @@
   --color-text-muted: var(--text-muted);
   --color-border-custom: var(--border);
   --color-border-hover-custom: var(--border-hover);
+  
+  --color-brand-secondary: #6BA60B;
+  --color-brand-tertiary: #006894;
+  --color-brand-neutral: #58595B;
+  
+  --color-category-blue-bg: rgba(0, 178, 187, 0.08);
+  --color-category-blue-txt: #00B2BB;
+  
+  --color-category-emerald-bg: rgba(107, 166, 11, 0.08);
+  --color-category-emerald-txt: #6BA60B;
+  
+  --color-category-indigo-bg: rgba(0, 104, 148, 0.08);
+  --color-category-indigo-txt: #006894;
   
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);

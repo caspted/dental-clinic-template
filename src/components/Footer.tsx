@@ -29,93 +29,60 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="bg-[#0F172A] text-white pt-16 pb-8 px-4 md:px-0">
-        <div className="w-full max-w-[1200px] mx-auto flex flex-col gap-12 md:gap-24">
-          {/* Footer Top Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-[0.8fr_1.2fr] gap-12 md:gap-24">
-            {/* Brand column */}
-            <div className="flex flex-col items-start gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl text-accent font-extrabold">✦</span>
-                <span className="font-heading text-xl font-bold tracking-tight text-white">
-                  {ghlCustomValues.practice_name}
+      <footer className="bg-bg-secondary text-text-primary py-12 px-4 md:px-0 border-t border-black/5">
+        <div className="w-full max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+          {/* Left side: Brand info with stylized logo */}
+          <div className="flex flex-col items-center md:items-start gap-4 text-center md:text-left">
+            <div className="flex items-center gap-2.5">
+              {/* Custom Stylized Tooth-Heart Logo */}
+              <div className="flex items-center justify-center w-9 h-9">
+                <svg viewBox="0 0 200 200" className="w-full h-full">
+                  <path 
+                    d="M 100,55 C 75,10 20,35 25,90 C 29,130 50,150 100,185 C 150,150 171,130 175,90 C 180,35 125,10 100,55 Z" 
+                    fill="none" 
+                    stroke="#6BA60B" 
+                    strokeWidth="12" 
+                    strokeLinejoin="round"
+                  />
+                  <path 
+                    d="M 100,75 L 100,125 M 75,100 L 125,100" 
+                    stroke="#00B2BB" 
+                    strokeWidth="10" 
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-heading text-base font-extrabold tracking-tight text-brand-tertiary uppercase leading-none">
+                  Bocobo
+                </span>
+                <span className="text-[10px] font-bold tracking-widest text-[#6BA60B] uppercase leading-none mt-1">
+                  Dental Care
                 </span>
               </div>
-              <p className="text-[#94A3B8] text-[15px] leading-relaxed max-w-[320px]">
-                Providing premium, tech-forward, and comfortable dental care in {ghlCustomValues.practice_city}.
-              </p>
             </div>
-
-            {/* Info Columns */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-              {/* Col 1: Office Address */}
-              <div className="flex flex-col gap-3">
-                <h4 className="text-white text-[15.2px] font-bold uppercase tracking-wider">
-                  Our Office
-                </h4>
-                <p className="text-[#94A3B8] text-[14.4px] leading-relaxed">
-                  {ghlCustomValues.practice_address}
-                  <br />
-                  {ghlCustomValues.practice_city}, {ghlCustomValues.practice_state}
-                </p>
-                <a
-                  href={`https://maps.google.com/?q=${encodeURIComponent(
-                    `${ghlCustomValues.practice_address}, ${ghlCustomValues.practice_city}, ${ghlCustomValues.practice_state}`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent text-[13.6px] font-semibold hover:text-[#38BDF8] h-[44px] flex items-center transition-colors duration-200"
-                >
-                  Get Directions on Google Maps ↗
-                </a>
-              </div>
-
-              {/* Col 2: Clinic Hours */}
-              <div className="flex flex-col gap-3">
-                <h4 className="text-white text-[15.2px] font-bold uppercase tracking-wider">
-                  Clinic Hours
-                </h4>
-                <p className="text-[#94A3B8] text-[14.4px] leading-relaxed">
-                  Mon - Fri: 8:00 AM - 6:00 PM
-                  <br />
-                  Saturday: 9:00 AM - 3:00 PM
-                  <br />
-                  Sunday: Closed
-                </p>
-              </div>
-
-              {/* Col 3: Get in Touch */}
-              <div className="flex flex-col gap-3">
-                <h4 className="text-white text-[15.2px] font-bold uppercase tracking-wider">
-                  Get In Touch
-                </h4>
-                <p className="text-[#94A3B8] text-[14.4px] leading-relaxed">
-                  Email: {ghlCustomValues.doctor_email}
-                  <br />
-                  Phone: {ghlCustomValues.practice_phone}
-                </p>
-              </div>
-            </div>
+            <p className="text-text-secondary text-[13.6px] leading-relaxed max-w-[360px]">
+              Providing premium, tech-forward, and comfortable dental care in Ermita, Manila.
+            </p>
           </div>
 
-          {/* Footer Bottom */}
-          <div className="border-t border-[#1E293B] pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-[#64748B] text-[13.6px] text-center md:text-left">
-              &copy; {new Date().getFullYear()} {ghlCustomValues.practice_name}. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6">
-              <a
-                href="#"
-                className="text-[12px] text-[#64748B] hover:text-[#94A3B8] h-[44px] flex items-center transition-colors duration-200"
-              >
-                Privacy Policy
-              </a>
-              <a
-                href="#"
-                className="text-[12px] text-[#64748B] hover:text-[#94A3B8] h-[44px] flex items-center transition-colors duration-200"
-              >
-                Terms of Service
-              </a>
+          {/* Right side: Navigation & legal links */}
+          <div className="flex flex-col items-center md:items-end gap-4">
+            {/* Quick navigation */}
+            <div className="flex items-center gap-6 text-[13.6px] font-bold text-text-secondary">
+              <a href="#services" className="hover:text-accent transition-colors">Services</a>
+              <a href="#about" className="hover:text-accent transition-colors">About Us</a>
+              <a href="#booking" className="hover:text-accent transition-colors">Booking</a>
+              <a href="#contact-location" className="hover:text-accent transition-colors">Location</a>
+            </div>
+            
+            {/* Legal and Copyright */}
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 text-[12.8px] text-text-muted">
+              <span>&copy; {new Date().getFullYear()} {ghlCustomValues.practice_name}. All rights reserved.</span>
+              <div className="flex items-center gap-4 font-semibold">
+                <a href="#" className="hover:text-text-secondary transition-colors h-[44px] flex items-center">Privacy Policy</a>
+                <a href="#" className="hover:text-text-secondary transition-colors h-[44px] flex items-center">Terms of Service</a>
+              </div>
             </div>
           </div>
         </div>
