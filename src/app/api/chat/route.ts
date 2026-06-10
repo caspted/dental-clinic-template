@@ -4,12 +4,12 @@ import { ghlCustomValues } from "../../../config/ghlConfig";
 // Dynamic System Prompt derived from GHL custom configurations
 const SYSTEM_PROMPT = `
 You are ${ghlCustomValues.setter_name || "Sarah"}, a warm, friendly, and highly professional virtual receptionist for ${ghlCustomValues.practice_name || "Zenith Dental Care"}. 
-Your goal is to answer patient inquiries gently, address their concerns about treatments or pricing, and guide them to schedule a consultation with our specialist, ${ghlCustomValues.doctor_name || "Dr. Alex Mercer"}.
+Your goal is to answer patient inquiries gently, address their concerns about treatments or pricing, and guide them to schedule a consultation with our specialists, ${ghlCustomValues.doctor_name || "Dr. Kristine Marcial & Dr. Kaelen Daulo"}.
 
 Here are your core practice business details:
 - Practice Name: ${ghlCustomValues.practice_name}
 - Tagline: ${ghlCustomValues.practice_tagline}
-- Lead Dentist: ${ghlCustomValues.doctor_name} (${ghlCustomValues.doctor_specialty})
+- Lead Dentists: ${ghlCustomValues.doctor_name} (${ghlCustomValues.doctor_specialty})
 - Treatments Offered: ${ghlCustomValues.procedures_offered}
 - Dental Implant Pricing: Low range starts at ${ghlCustomValues.implant_price_low} and high range is ${ghlCustomValues.implant_price_high}.
 - Financing Options: ${ghlCustomValues.financing_options}
@@ -21,7 +21,7 @@ Here are your core practice business details:
 Conversation Guidelines:
 1. Tone: Empathetic, welcoming, clear, and clinical yet deeply friendly.
 2. Conciseness: Keep responses short and conversational (max 2-3 sentences). This fits perfectly in a mobile floating chat bubble.
-3. Medical Safety: Never diagnose dental issues or suggest specific treatments for symptoms. Always advise the patient to book a free assessment with ${ghlCustomValues.doctor_name} to get a professional diagnosis.
+3. Medical Safety: Never diagnose dental issues or suggest specific treatments for symptoms. Always advise the patient to book a free assessment with our dentists, ${ghlCustomValues.doctor_name}, to get a professional diagnosis.
 4. Booking Goal: If the patient expresses interest in visiting the clinic, scheduling an appointment, taking the assessment, or booking a consultation, explain how easy it is to schedule and append the exact tag "[TRIGGER_BOOKING]" to the very end of your response text.
 
 Example: "We can certainly help you with that! [TRIGGER_BOOKING]"
@@ -47,7 +47,7 @@ function getMockResponse(message: string): { response: string; triggerBooking: b
   } else if (msg.includes("phone") || msg.includes("number") || msg.includes("call")) {
     response = `You can call our scheduling desk directly at ${ghlCustomValues.practice_phone}! We are always happy to help you over the phone.`;
   } else if (msg.includes("pain") || msg.includes("hurt") || msg.includes("emergency") || msg.includes("bleeding")) {
-    response = `I'm so sorry to hear you're experiencing pain. While I cannot give medical advice, ${ghlCustomValues.doctor_name} recommends having it checked immediately to prevent further infection. Let's get you in for a diagnostic visit right away.`;
+    response = `I'm so sorry to hear you're experiencing pain. While I cannot give medical advice, our dentists recommend having it checked immediately to prevent further infection. Let's get you in for a diagnostic visit right away.`;
     triggerBooking = true;
   } else if (msg.includes("financing") || msg.includes("credit") || msg.includes("payment")) {
     response = `Yes, we support ${ghlCustomValues.financing_options}. This allows you to split payments with 0% interest! Would you like to schedule a checkup to discuss custom smile financing?`;
@@ -139,7 +139,7 @@ export async function POST(request: Request) {
     console.error("Execution breakdown inside chat API handler:", error);
     // Absolute safety fallback
     return NextResponse.json({
-      response: `Thank you for reaching out! To lock in your consultation with ${ghlCustomValues.doctor_name}, please fill out the quick intake form right here on the page, or give us a call.`,
+      response: `Thank you for reaching out! To lock in your consultation with our dentists, please fill out the quick intake form right here on the page, or give us a call.`,
       triggerBooking: true,
       isMock: true
     });

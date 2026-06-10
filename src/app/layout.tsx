@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Libre_Franklin, Montserrat } from "next/font/google";
 import "./globals.css";
 import { ghlCustomValues } from "../config/ghlConfig";
 
-const inter = Inter({
+const libreFranklin = Libre_Franklin({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
 });
 
-const outfit = Outfit({
+const montserrat = Montserrat({
   variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Zenith Dental Care : Premium General & Cosmetic Dentist San Francisco",
-  description: "Experience premium, state-of-the-art dental care in San Francisco. Get the confident, healthy smile you deserve with our signature comfort guarantee.",
+  title: "Bocobo Dental Care Co. : Quality & Affordable Dentist Manila",
+  description: "Experience quality and affordable dental treatment in Manila with a complete and well-equipped dental clinic. Book your dental appointment with Bocobo Dental Care Co.",
 };
 
 export default function RootLayout({
@@ -39,13 +39,13 @@ export default function RootLayout({
       "streetAddress": ghlCustomValues.practice_address,
       "addressLocality": ghlCustomValues.practice_city,
       "addressRegion": ghlCustomValues.practice_state,
-      "postalCode": "94108",
-      "addressCountry": "US"
+      "postalCode": "1004",
+      "addressCountry": "PH"
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": 37.7892,
-      "longitude": -122.4081
+      "latitude": 14.578069,
+      "longitude": 120.982349
     },
     "openingHoursSpecification": [
       {
@@ -62,17 +62,24 @@ export default function RootLayout({
       }
     ],
     "medicalSpecialty": "CosmeticDentistry",
-    "employee": {
-      "@type": "Dentist",
-      "name": ghlCustomValues.doctor_name,
-      "jobTitle": ghlCustomValues.doctor_specialty
-    }
+    "employee": [
+      {
+        "@type": "Dentist",
+        "name": "Dr. Kristine Marcial",
+        "jobTitle": "Dentist"
+      },
+      {
+        "@type": "Dentist",
+        "name": "Dr. Kaelen Daulo",
+        "jobTitle": "Dentist"
+      }
+    ]
   };
 
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${outfit.variable} h-full antialiased scroll-smooth`}
+      className={`${libreFranklin.variable} ${montserrat.variable} h-full antialiased scroll-smooth`}
     >
       <head>
         <script
